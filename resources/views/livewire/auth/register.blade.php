@@ -29,13 +29,61 @@
     @endif
 
     <form method="POST" wire:submit="register" class="flex flex-col gap-6">
+        <!-- Nombres -->
+        <flux:input
+            wire:model="nombres"
+            :label="__('Nombres')"
+            type="text"
+            required
+            autofocus
+            autocomplete="given-name"
+            :placeholder="__('Nombres')"
+        />
+
+        <!-- Apellidos -->
+        <flux:input
+            wire:model="apellidos"
+            :label="__('Apellidos')"
+            type="text"
+            required
+            autocomplete="family-name"
+            :placeholder="__('Apellidos')"
+        />
+
+        <!-- Email -->
+        <flux:input
+            wire:model="email"
+            :label="__('Email')"
+            type="email"
+            required
+            autocomplete="email"
+            :placeholder="__('Email')"
+        />
+
+        <!-- Teléfono -->
+        <flux:input
+            wire:model="telefono"
+            :label="__('Teléfono')"
+            type="text"
+            required
+            autocomplete="tel"
+            :placeholder="__('Teléfono')"
+        />
+
+        <!-- DPI -->
+        <flux:input
+            wire:model="dpi"
+            :label="__('DPI')"
+            type="text"
+            :placeholder="__('DPI (opcional)')"
+        />
+
         <!-- Usuario -->
         <flux:input
             wire:model="usuario"
             :label="__('Usuario')"
             type="text"
             required
-            autofocus
             autocomplete="username"
             :placeholder="__('Nombre de usuario')"
         />
@@ -80,3 +128,14 @@
         <flux:link :href="route('login')" wire:navigate>{{ __('Log in') }}</flux:link>
     </div>
 </div>
+
+@script
+<script>
+    $wire.on('redirect', (event) => {
+        console.log('Redirect event received:', event);
+        setTimeout(() => {
+            window.location.href = event.url || event[0].url;
+        }, 100);
+    });
+</script>
+@endscript

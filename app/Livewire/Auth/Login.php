@@ -4,6 +4,7 @@ namespace App\Livewire\Auth;
 
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
@@ -23,23 +24,26 @@ class Login extends Component
 
     public bool $remember = false;
 
-    public string $successMessage = '';
-
     public string $errorMessage = '';
+
+    public string $successMessage = '';
 
     /**
      * Handle an incoming authentication request.
      */
-    public function login(): void
+    public function login()
     {
-        $this->successMessage = '';
         $this->errorMessage = '';
+        $this->successMessage = '';
 
         $this->validate();
 
         $this->ensureIsNotRateLimited();
 
+        Log::info('Intentando login con usuario: ' . $this->usuario);
+        
         if (! Auth::attempt(['usuario' => $this->usuario, 'password' => $this->password], $this->remember)) {
+            Log::error('Login fallido para usuario: ' . $this->usuario);
             RateLimiter::hit($this->throttleKey());
 
             $this->errorMessage = 'Las credenciales no coinciden con nuestros registros. Por favor verifica tu usuario y contraseña.';
@@ -49,13 +53,20 @@ class Login extends Component
             ]);
         }
 
+        Log::info('Login exitoso para usuario: ' . $this->usuario);
+        Log::info('Usuario autenticado ID: ' . Auth::id());
+
         RateLimiter::clear($this->throttleKey());
-        Session::regenerate();
-        
-        session()->flash('success', 'Bienvenido de vuelta');
-        
-        // Redireccionar al dashboard después del login exitoso
-        $this->redirectRoute('dashboard', navigate: true);
+
+        Log::info('Session ID after login: ' . Session::getId());
+
+        // Mensaje de éxito
+        session()->flash('status', 'Has iniciado sesión correctamente. ¡Bienvenido!');
+
+        Log::info('Dispatching JavaScript redirect to dashboard');
+
+        // Dispatch evento para redirección JavaScript
+        $this->dispatch('login-success', url: route('dashboard'));
     }
 
     /**

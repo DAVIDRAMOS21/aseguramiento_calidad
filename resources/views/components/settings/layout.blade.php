@@ -4,6 +4,10 @@
             <flux:navlist.item :href="route('settings.profile')" wire:navigate>{{ __('Profile') }}</flux:navlist.item>
             <flux:navlist.item :href="route('settings.password')" wire:navigate>{{ __('Password') }}</flux:navlist.item>
             <flux:navlist.item :href="route('settings.appearance')" wire:navigate>{{ __('Appearance') }}</flux:navlist.item>
+            @if(auth()->user()->is_superuser)
+                <flux:navlist.item :href="route('settings.user-registration')" wire:navigate>{{ __('User Registration') }}</flux:navlist.item>
+                <flux:navlist.item :href="route('settings.user-roles')" wire:navigate>{{ __('User Roles') }}</flux:navlist.item>
+            @endif
         </flux:navlist>
     </div>
 

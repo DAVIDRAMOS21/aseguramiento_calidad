@@ -19,8 +19,15 @@ class Profile extends Component
      */
     public function mount(): void
     {
-        $this->name = Auth::user()->name;
-        $this->email = Auth::user()->email;
+        $user = Auth::user();
+        
+        if (!$user) {
+            $this->redirect(route('login'));
+            return;
+        }
+        
+        $this->name = $user->name;
+        $this->email = $user->email;
     }
 
     /**
@@ -29,6 +36,12 @@ class Profile extends Component
     public function updateProfileInformation(): void
     {
         $user = Auth::user();
+
+        // Only superusers can update profile information
+        if (!$user->is_superuser) {
+            session()->flash('error', 'No tienes permisos para modificar la información del perfil.');
+            return;
+        }
 
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],

@@ -15,6 +15,23 @@
                 <flux:navlist.group :heading="__('Platform')" class="grid">
                     <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
                 </flux:navlist.group>
+
+                <flux:navlist.group :heading="__('Inventario')" class="grid">
+                    <flux:navlist.item icon="computer-desktop" :href="route('equipment.register')" :current="request()->routeIs('equipment.register')" wire:navigate>{{ __('Registro de Equipos') }}</flux:navlist.item>
+                </flux:navlist.group>
+
+                @if(auth()->user()->is_admin || auth()->user()->is_superuser)
+                <flux:navlist.group :heading="__('Personal')" class="grid">
+                    <flux:navlist.item icon="user-group" :href="route('employee.register')" :current="request()->routeIs('employee.register')" wire:navigate>{{ __('Registro de Personal') }}</flux:navlist.item>
+                </flux:navlist.group>
+                @endif
+
+                @if(auth()->user()->es_superusuario)
+                <flux:navlist.group :heading="__('Administración')" class="grid">
+                    <flux:navlist.item icon="users" :href="route('settings.user-registration')" :current="request()->routeIs('settings.user-registration')" wire:navigate>{{ __('Registro de Usuarios') }}</flux:navlist.item>
+                    <flux:navlist.item icon="shield-check" :href="route('settings.user-roles')" :current="request()->routeIs('settings.user-roles')" wire:navigate>{{ __('Roles de Usuarios') }}</flux:navlist.item>
+                </flux:navlist.group>
+                @endif
             </flux:navlist>
 
             <flux:spacer />
@@ -51,7 +68,7 @@
 
                                 <div class="grid flex-1 text-start text-sm leading-tight">
                                     <span class="truncate font-semibold">{{ auth()->user()->name }}</span>
-                                    <span class="truncate text-xs">{{ auth()->user()->email }}</span>
+                                    <span class="truncate text-xs">{{ auth()->user()->email ?: auth()->user()->usuario }}</span>
                                 </div>
                             </div>
                         </div>
@@ -101,7 +118,7 @@
 
                                 <div class="grid flex-1 text-start text-sm leading-tight">
                                     <span class="truncate font-semibold">{{ auth()->user()->name }}</span>
-                                    <span class="truncate text-xs">{{ auth()->user()->email }}</span>
+                                    <span class="truncate text-xs">{{ auth()->user()->email ?: auth()->user()->usuario }}</span>
                                 </div>
                             </div>
                         </div>
@@ -128,5 +145,6 @@
         {{ $slot }}
 
         @fluxScripts
+        @livewireScripts
     </body>
 </html>

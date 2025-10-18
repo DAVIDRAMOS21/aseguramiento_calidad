@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('segundo_nombre', 50);
             $table->string('primer_apellido', 50);
             $table->string('segundo_apellido', 50);
-            $table->unsignedInteger('id_usuario')->unique('id_usuario');
+            $table->unsignedInteger('id_usuario')->nullable()->unique('id_usuario');
             $table->enum('estado', ['activo', 'inactivo', 'vacaciones'])->nullable()->default('activo');
         });
     }

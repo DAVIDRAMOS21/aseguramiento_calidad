@@ -21,6 +21,13 @@ class Password extends Component
      */
     public function updatePassword(): void
     {
+        // Check if the user is a superuser
+        if (!Auth::user()->is_superuser) {
+            throw ValidationException::withMessages([
+                'password' => ['Solo los superusuarios pueden modificar contraseñas.'],
+            ]);
+        }
+
         try {
             $validated = $this->validate([
                 'current_password' => ['required', 'string', 'current_password'],
